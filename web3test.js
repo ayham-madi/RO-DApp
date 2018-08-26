@@ -39,6 +39,7 @@ var filepath = 'Contract/StoreContract.sol';
 var input = fs.readFileSync(filepath).toString();
 
 var output = solc.compile(input, 1); // 1 activates the optimiser
+console.log("manifest.IPFSHash");
 
 for (var contractName in output.contracts) {
 
@@ -66,7 +67,7 @@ for(k = 0 ; k < allManifests.length ; k++){
 
   var rodigest = getBytes32FromMultiash(allManifests[k].IPFSHash.toString());
   var isPackLoaded;
-  await newContractInstance.methods.isRoLoaded(rodigest).call().then(async function(receipt){console.log("isRoLoaded receipt: "+receipt); isPackLoaded = receipt;});
+  /*await newContractInstance.methods.isRoLoaded(rodigest).call().then(async function(receipt){console.log("isRoLoaded receipt: "+receipt); isPackLoaded = receipt;});
   if(isPackLoaded){
     await newContractInstance.methods.logRejectRO(allManifests[k].id, allManifests[k].IPFSHash, "Package is already uploaded!!" ).send();
     throw "Package is already uploaded!!";
@@ -81,10 +82,13 @@ for(k = 0 ; k < allManifests.length ; k++){
       throw "this resource "+allManifests[k].aggregates[i].IPFSHash +" is not cited properly!!";
     }
   });
-  }
+}*/
 
   //Uploading new Package
-  await newContractInstance.methods.uploadRo(allManifests[k].id, rodigest, allManifests[k].previousRO ).send();
+  await newContractInstance.methods.uploadRo( rodigest ).send().then(async function(){
+    await newContractInstance.methods.setRoID(allManifests[k].id, rodigest).send();
+  });
+
   await newContractInstance.methods.logCreateRO(allManifests[k].id, rodigest).send();
   //Adding resources .....
   var i;
@@ -132,7 +136,7 @@ newContractInstance.getPastEvents("CreateRO",{
 
   var n ;
   for (n=0;n< event.length; n++ ){
-  console.log("event: "+ event[n].event +
+  console.log("event: "+ (n+1) +
    "\nScientist account: "+event[n].returnValues[0] +
    "\nPackage Id: "+event[n].returnValues[1]+
    "\nPackage Hash: "+event[n].returnValues[2]+
@@ -150,7 +154,7 @@ newContractInstance.getPastEvents("AddRoRsc",{
   console.log("*********************AddRoRsc************************");
   var n ;
   for (n=0;n< event.length; n++ ){
-  console.log("event: "+ event[n].event +
+    console.log("event: "+ (n+1) +
    "\nScientist account: "+event[n].returnValues[0] +
    "\nResource hash: "+event[n].returnValues[1]+
    "\nPackage Id: "+event[n].returnValues[2]+
@@ -167,7 +171,7 @@ newContractInstance.getPastEvents("NewChange",{
 console.log("*********************NewChange************************");
   var n ;
   for (n=0;n< event.length; n++ ){
-  console.log("event: "+ event[n].event +
+    console.log("event: "+ (n+1) +
    "\nPackage ID: "+event[n].returnValues[0] +
    "\nPrev Pacakge ID: "+event[n].returnValues[1]+
    "\nPurpose: "+event[n].returnValues[2]+

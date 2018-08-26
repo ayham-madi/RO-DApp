@@ -2,48 +2,47 @@ pragma solidity ^0.4.24;
 
 contract RoContract {
 
+    mapping (string => bytes32) private packIds; //stored by id
+    mapping(address => bytes32[]) private scientistROs;
+    mapping (bytes32 => bool) private roStore; // stored by ipfs hash digest
 
-    struct Ro {
-        bytes32 digest;
-        bool initialized;
-        string prevId;
-    }
 
     struct AggResource{
         bytes32 ipfsDigest;
         string resourceRole;
     }
 
-    mapping (string => Ro) private allRos;
-    mapping(address => bytes32[]) private scientistROs;
-
     mapping(bytes32 => bool) private rscStore;
-
     mapping(bytes32 => AggResource[]) private roRSCss;
-
     mapping(bytes32 => mapping(string => bool)) private rscOwnership;
 
     enum ValidationRslt{VALID, NOT_VALID, NEW_RSC} ValidationRslt validationRslt;
-    enum RscRole {INPUT, PROCESS, RESULT} RscRole rscRole;
 
-    function uploadRo(string id, bytes32 ipfsAddress, string preId) public {
-       if(allRos[id].initialized){
-         return;
-       }
-       allRos[id] = Ro( ipfsAddress, true, preId );
+    function setRoID(string id, bytes32 ipfsAddress) public {
+
+       packIds[id] = ipfsAddress;
     }
 
-    function addScietistRO(bytes32 _digest) public{
 
-    scientistROs[msg.sender].push( _digest);
+    function uploadRo( bytes32 ipfsAddress) public {
+       if(roStore[ipfsAddress]){
+         return;
+       }
+        roStore[ipfsAddress] =  true ;
+    }
+
+
+    function addScietistRO(bytes32 roDigest) public{
+
+    scientistROs[msg.sender].push( roDigest);
     }
 
     function getNumberofPacs(address scientist) public constant returns (uint) {
         return scientistROs[scientist].length;
     }
 
-    function isRoLoaded (string id) public constant returns (bool){
-        return (allRos[id].initialized);
+    function isRoLoaded(bytes32 roDigest) public constant returns (bool){
+        return (roStore[roDigest]);
     }
 
     function validateResource(bytes32 rcsIpfsDigest, string owner) public constant  returns (ValidationRslt){
@@ -89,14 +88,14 @@ contract RoContract {
     function getROPurpose(string preID, bytes32 newDigest)public constant returns(string){
 
         bool isRcsChanged = false;
-        for(uint i = 0 ; i < roRSCss[allRos[preID].digest].length ;i++ ){
+        for(uint i = 0 ; i < roRSCss[packIds[preID]].length ;i++ ){
             for(uint j= 0 ; j< roRSCss[newDigest].length; j++){
 
-                if (pacContainsRcs(allRos[preID].digest, roRSCss[newDigest][i].ipfsDigest)){
+                if (pacContainsRcs(packIds[preID], roRSCss[newDigest][i].ipfsDigest)){
                     continue;
                 }else{
                     isRcsChanged = true;
-                    if(keccak256(roRSCss[allRos[preID].digest][i].resourceRole) == keccak256("process")){
+                    if(keccak256(roRSCss[packIds[preID]][i].resourceRole) == keccak256("process")){
                         return "Modified";
                     }
                 }
