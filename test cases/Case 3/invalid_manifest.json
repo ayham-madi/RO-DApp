@@ -1,0 +1,31 @@
+{ "@context": ["https://w3id.org/bundle/context"],
+  "id": "RO:1115555",
+  "IPFSHash":"QmWWQSuPMS6aXCbZKpEjPHPUZN2NjB3YrhJTHsV4X3vb2t",
+  "previousRO":"",
+  "isEvolved":"0",
+  "aggregates": [
+    { "uri": "http://dx.doi.org/10.5281/zenodo.18877",
+      "IPFSHash":"QmWWQSuPMS6aXCbZKpEjPHPUZN2NjB3YrhJTHsV4X3v111",
+      "ResourceCategory": "input",
+      "owner": "http://orcid.org/0000-0001-1212-XXXX",
+      "bundledAs": { "uri": "urn:uuid:aaf448d5-bcdb-42fd-abb3-28ed4ddc93c3"}
+    },
+    { "uri": "/process.py",
+      "IPFSHash":"QmWWQSuPMS6aXCbZKpEjPHPUZN2NjB3YrhJTHsV4X3v222",
+      "ResourceCategory": "process",
+      "owner": "http://orcid.org/0000-0001-1313-XXXX",
+      "bundledAs": { "uri": "urn:uuid:2562a70c-93a3-4834-9f40-dc0217ebb300"}
+    },
+    { "uri": "/result.csv",
+      "IPFSHash":"QmWWQSuPMS6aXCbZKpEjPHPUZN2NjB3YrhJTHsV4X3v333",
+      "ResourceCategory": "result",
+      "owner": "http://orcid.org/0000-0001-1212-XXXX",
+      "bundledAs": { "uri": "urn:uuid:81c94a59-df75-4e3d-939b-dbd366a38328"}
+    }
+  ],
+  "createdBy": {
+    "name": "Ahmad Madi",
+    "orcid": "http://orcid.org/0000-0001-1313-XXXX",
+    "uri": "http://example.com/user/ayham"
+  }
+}
