@@ -124,20 +124,20 @@ contract RoContract {
 
     event AddRoRsc(address, string rscHash, string roHash);
     event AddNewRsc(address, string rscIPFS, string rscOwner);
-    event NewChange(string newRO, string oldRO, string changePurpoe);
+    event NewChange(address account, string newRO, string oldRO, string changePurpoe);
     event CreateRO(address account, string packId, string ipfsHash);
     event RejectRO(address account, string roId, string roDigest, string message);
 
     function logAddRoRsc(string rscHash, string packId)public{
-        emit AddRoRsc(msg.sender,  rscHash,  packId);
+        emit AddRoRsc( msg.sender,  rscHash,  packId);
     }
 
     function logAddNewRsc(string rscIPFS, string rscOwner)public{
-        emit AddNewRsc(msg.sender,  rscIPFS,  rscOwner);
+        emit AddNewRsc( msg.sender,  rscIPFS,  rscOwner);
     }
 
     function logNewChange(string newROId, string oldROId, string changePurpose)public{
-        emit NewChange(newROId, oldROId, changePurpose);
+        emit NewChange(msg.sender, newROId, oldROId, changePurpose);
     }
 
     function logCreateRO(string packId, string ipfsHash)public{
